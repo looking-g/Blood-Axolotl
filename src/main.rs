@@ -1,5 +1,8 @@
 use bevy::prelude::*;
 
+pub mod aabb;
+pub mod physics;
+
 fn main() {
     App::new()
         .add_plugins((
