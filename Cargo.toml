@@ -1,0 +1,8 @@
+[package]
+name = "blood-axolotl"
+version = "0.0.1"
+edition = "2024"
+
+[dependencies]
+
+bevy = "0.19"
