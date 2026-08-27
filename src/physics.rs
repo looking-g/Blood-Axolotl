@@ -27,10 +27,10 @@ impl PhsObj {
     pub fn new(pos: Vec2, half_size: Vec2) -> Self {
         Self {
             aabb: Aabb::new(
-                half_size * Vec2::new(1.0, -1.0),
                 half_size * Vec2::new(-1.0, 1.0),
+                half_size * Vec2::new(1.0, -1.0),
             ),
-            transform: Transform::from_translation(pos.extend(1.0)),
+            transform: Transform::from_translation(pos.extend(0.0)),
             ..default()
         }
     }
@@ -56,16 +56,18 @@ impl PhsObj {
 
 pub fn physics_plugin(app: &mut App) {
     app
+        .add_message::<SolveCollision>()
         .add_systems(Update, (gravity_system, apply_vel_system))
+        .add_systems(Update, (collision_reaction_system, collision_reaction_reader).chain())
     ;
 }
 
 // TODO: change to a normal value later
-const GRAVITY_CONST: Vec2 = Vec2::new(0.0, -0.01);
+const GRAVITY_CONST: Vec2 = Vec2::new(0.001, -0.1);
 
 /// Applys gravity to an object's velocity.
 pub fn gravity_system(
-    mut phs_objs: Query<&mut Velocity, With<Phs>>,
+    mut phs_objs: Query<&mut Velocity, (With<Phs>, Without<Pin>)>,
 ) {
     for mut vel in phs_objs.iter_mut() {
         vel.0 += GRAVITY_CONST;
@@ -81,6 +83,72 @@ pub fn apply_vel_system(
     }
 
 }
+
+
+/// Finds collisions for [`PhsObj`]s, reactions are caried out by [`collision_reaction_reader`]
+pub fn collision_reaction_system(
+    phs_objs: Query<(&Aabb, &Velocity, &Transform, Has<Pin>, Entity), With<Phs>>,
+    mut writer: MessageWriter<SolveCollision>,
+) {
+    for (aabb, vel, transform, has_pin, entity) in phs_objs.iter() {
+        for (other_aabb, _, other_transform, _ , other_entity) in phs_objs.iter() {
+            if !has_pin && entity != other_entity{
+                let self_world_aabb = aabb.translate(transform.translation.xy());
+                let other_world_aabb = other_aabb.translate(other_transform.translation.xy());
+
+                if Aabb::collide(
+                    &self_world_aabb,
+                    &other_world_aabb, 
+                ) {
+
+                    // getting overlap
+
+                    let overlap = self_world_aabb.collideing_side(&other_world_aabb);
+ 
+                    writer.write(dbg!(SolveCollision{
+                            entity,
+                            x_overlap: overlap.x,
+                            y_overlap: overlap.y,
+                    }));
+                }
+            }
+        }
+    }
+}
+
+#[derive(Message, Debug)]
+pub struct SolveCollision {
+    entity: Entity,
+    x_overlap: f32,
+    y_overlap: f32,
+}
+
+/// Enacts collision reactions found by [`collision_reaction_system`]
+fn collision_reaction_reader(
+    mut phs_objs: Query<(&mut Velocity, &mut Transform), With<Phs>>,
+    mut reader: MessageReader<SolveCollision>,
+) {
+    for SolveCollision{entity, x_overlap, y_overlap} in reader.read() {
+        if let Ok((mut vel, mut transform)) = phs_objs.get_mut(*entity) {
+
+            println!("pos: {}", transform.translation);
+            
+            if y_overlap.abs() + x_overlap.abs() < 0.0001 {
+                return; 
+            } else if y_overlap.abs() <= x_overlap.abs() {
+                vel.0.y = 0.0;
+                transform.translation.y += y_overlap;
+            } else if x_overlap.abs() < y_overlap.abs() {
+                vel.0.x = 0.0;
+                transform.translation.x += x_overlap;
+            }
+
+        }
+    }
+}
+
+
+
 
 
 
