@@ -30,11 +30,36 @@ impl PhsObj {
             ..default()
         }
     }
+
+    /// Creates a new [`PhsObj`] and puts it into the World.
+    pub fn new_to_world(
+        commands: &mut Commands,
+        pos: Vec2, 
+        half_size: Vec2,
+        extra_components: Option<impl Bundle>,
+    ) {
+        let id = commands.spawn(
+            Self::new(pos, half_size)
+        ).id();
+
+        if let Some(bundle) = extra_components {
+            commands.entity(id).insert(bundle);
+        }
+
+    }
 }
 
 
-const GRAVITY_CONST: Vec2 = Vec2::new(0.0, -1.0);
+pub fn physics_plugin(app: &mut App) {
+    app
+        .add_systems(Update, (gravity_system, apply_vel_system))
+    ;
+}
 
+// TODO: change to a normal value later
+const GRAVITY_CONST: Vec2 = Vec2::new(0.0, -0.01);
+
+/// Applys gravity to an object's velocity.
 pub fn gravity_system(
     mut phs_objs: Query<&mut Velocity, With<Phs>>,
 ) {
@@ -42,6 +67,17 @@ pub fn gravity_system(
         vel.0 += GRAVITY_CONST;
     }
 }
+
+/// Applys an object's velocity to it's position.
+pub fn apply_vel_system(
+    mut phs_objs: Query<(&Velocity, &mut Transform), With<Phs>>,
+) {
+    for (vel, mut transform) in phs_objs.iter_mut() {
+        transform.translation += vel.0.extend(0.0);
+    }
+
+}
+
 
 
 

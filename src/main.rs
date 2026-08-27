@@ -3,6 +3,8 @@ use bevy::prelude::*;
 pub mod aabb;
 pub mod physics;
 
+use physics::*;
+
 fn main() {
     App::new()
         .add_plugins((
@@ -16,6 +18,7 @@ fn main() {
                 ..default()
             }),
         ))
+        .add_plugins(physics_plugin)
 
         .add_systems(Startup, setup)
         .run();
@@ -30,12 +33,15 @@ fn setup(
         Camera2d,
     ));
 
-
-    commands.spawn((
-        Mesh2d( meshes.add(Rectangle::new(100.0, 100.0)) ),
-        MeshMaterial2d(materials.add( Color::srgba(0.0, 0.0, 0.0, 1.0) )),
-        Transform::from_xyz(0.0, 0.0, 0.0),
-    ));
-
+    
+    PhsObj::new_to_world(
+        &mut commands,
+        Vec2::new(0.0, 0.0),
+        Vec2::new(100.0, 100.0),
+        Some((
+            Mesh2d( meshes.add(Rectangle::new(100.0, 100.0)) ),
+            MeshMaterial2d(materials.add( Color::srgba(0.0, 0.0, 0.0, 1.0) )),
+        )),
+    );
 
 }
