@@ -30,4 +30,13 @@ impl Aabb {
         self.br.x <= other.tl.x &&
         self.tl.x >= other.br.x
     }
+
+    /// translates the Aabb
+    pub fn translate(mut self, pos: Vec2) -> Self{
+        self.tl += pos;
+        self.br += pos;
+
+        self
+    }
 }
+
