@@ -44,4 +44,16 @@ fn setup(
         )),
     );
 
+    
+    PhsObj::new_to_world(
+        &mut commands,
+        Vec2::new(0.0, -300.0),
+        Vec2::new(100.0, 100.0),
+        Some((
+            Mesh2d( meshes.add(Rectangle::new(100.0, 100.0)) ),
+            MeshMaterial2d(materials.add( Color::srgba(1.0, 1.0, 0.0, 1.0) )),
+            Pin,
+        )),
+    );
+
 }

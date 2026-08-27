@@ -11,6 +11,10 @@ pub struct Velocity(pub Vec2);
 /// Marker for physics objects
 pub struct Phs;
 
+#[derive(Component, Default)]
+/// Marker that states that a [`PhsObj`] will not be effected by gravity.
+pub struct Pin;
+
 #[derive(Bundle, Default)]
 /// An object that is effected by physics
 pub struct PhsObj{
@@ -70,7 +74,7 @@ pub fn gravity_system(
 
 /// Applys an object's velocity to it's position.
 pub fn apply_vel_system(
-    mut phs_objs: Query<(&Velocity, &mut Transform), With<Phs>>,
+    mut phs_objs: Query<(&Velocity, &mut Transform), (With<Phs>, Without<Pin>)>,
 ) {
     for (vel, mut transform) in phs_objs.iter_mut() {
         transform.translation += vel.0.extend(0.0);
