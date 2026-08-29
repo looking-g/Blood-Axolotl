@@ -63,7 +63,7 @@ pub fn physics_plugin(app: &mut App) {
 }
 
 // TODO: change to a normal value later
-const GRAVITY_CONST: Vec2 = Vec2::new(0.001, -0.1);
+const GRAVITY_CONST: Vec2 = Vec2::new(0.0, -0.1);
 
 /// Applys gravity to an object's velocity.
 pub fn gravity_system(

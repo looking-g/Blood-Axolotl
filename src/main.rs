@@ -2,8 +2,10 @@ use bevy::prelude::*;
 
 pub mod aabb;
 pub mod physics;
+pub mod player;
 
 use physics::*;
+use player::{Player, player_plugin};
 
 fn main() {
     App::new()
@@ -18,7 +20,7 @@ fn main() {
                 ..default()
             }),
         ))
-        .add_plugins(physics_plugin)
+        .add_plugins((physics_plugin, player_plugin))
 
         .add_systems(Startup, setup)
         .run();
@@ -41,6 +43,7 @@ fn setup(
         Some((
             Mesh2d( meshes.add(Rectangle::new(100.0, 100.0)) ),
             MeshMaterial2d(materials.add( Color::srgba(0.0, 0.0, 0.0, 1.0) )),
+            Player,
         )),
     );
 
@@ -48,33 +51,9 @@ fn setup(
     PhsObj::new_to_world(
         &mut commands,
         Vec2::new(0.0, -300.0),
-        Vec2::new(50.0, 50.0),
+        Vec2::new(300.0, 50.0),
         Some((
-            Mesh2d( meshes.add(Rectangle::new(100.0, 100.0)) ),
-            MeshMaterial2d(materials.add( Color::srgba(1.0, 1.0, 0.0, 1.0) )),
-            Pin,
-        )),
-    );
-
-
-    PhsObj::new_to_world(
-        &mut commands,
-        Vec2::new(-120.0, -260.0),
-        Vec2::new(50.0, 50.0),
-        Some((
-            Mesh2d( meshes.add(Rectangle::new(100.0, 100.0)) ),
-            MeshMaterial2d(materials.add( Color::srgba(1.0, 1.0, 0.0, 1.0) )),
-            Pin,
-        )),
-    );
-
-
-    PhsObj::new_to_world(
-        &mut commands,
-        Vec2::new(120.0, -260.0),
-        Vec2::new(50.0, 50.0),
-        Some((
-            Mesh2d( meshes.add(Rectangle::new(100.0, 100.0)) ),
+            Mesh2d( meshes.add(Rectangle::new(600.0, 100.0)) ),
             MeshMaterial2d(materials.add( Color::srgba(1.0, 1.0, 0.0, 1.0) )),
             Pin,
         )),
