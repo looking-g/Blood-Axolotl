@@ -57,20 +57,22 @@ impl PhsObj {
 pub fn physics_plugin(app: &mut App) {
     app
         .add_message::<SolveCollision>()
-        .add_systems(Update, (gravity_system, apply_vel_system))
-        .add_systems(Update, (collision_reaction_system, collision_reaction_reader).chain())
+        .add_systems(Update, (gravity_system, apply_vel_system, collision_reaction_system, collision_reaction_reader).chain())
     ;
 }
 
 // TODO: change to a normal value later
-const GRAVITY_CONST: Vec2 = Vec2::new(0.0, -0.1);
+const GRAVITY_CONST: Vec2 = Vec2::new(0.0, -25.0);
 
 /// Applys gravity to an object's velocity.
 pub fn gravity_system(
     mut phs_objs: Query<&mut Velocity, (With<Phs>, Without<Pin>)>,
+    time: Res<Time>,
 ) {
+    let dt = time.delta_secs();
+
     for mut vel in phs_objs.iter_mut() {
-        vel.0 += GRAVITY_CONST;
+        vel.0 += GRAVITY_CONST * dt;
     }
 }
 
@@ -96,10 +98,7 @@ pub fn collision_reaction_system(
                 let self_world_aabb = aabb.translate(transform.translation.xy());
                 let other_world_aabb = other_aabb.translate(other_transform.translation.xy());
 
-                if Aabb::collide(
-                    &self_world_aabb,
-                    &other_world_aabb, 
-                ) {
+                if Aabb::collide(&self_world_aabb, &other_world_aabb) {
 
                     // getting overlap
 
@@ -130,9 +129,8 @@ fn collision_reaction_reader(
 ) {
     for SolveCollision{entity, x_overlap, y_overlap} in reader.read() {
         if let Ok((mut vel, mut transform)) = phs_objs.get_mut(*entity) {
-            
             if y_overlap.abs() + x_overlap.abs() < 0.0001 {
-                return; 
+                continue; 
             } else if y_overlap.abs() <= x_overlap.abs() {
                 vel.0.y = 0.0;
                 transform.translation.y += y_overlap;

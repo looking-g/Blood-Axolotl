@@ -42,8 +42,7 @@ impl Aabb {
         self_min_y < other_max_y
     }
 
-    /// Returns the side with the most collision overlap
-    /// returns 0, 0 if there is no overlap
+    /// Returns the collision overlaps of the input AABBs
     pub fn collideing_side(&self, other: &Self) -> Vec2 {
         let self_max_x = self.lt.x.max(self.rb.x);
         let self_max_y = self.lt.y.max(self.rb.y);
@@ -56,22 +55,21 @@ impl Aabb {
         let other_min_y = other.lt.y.min(other.rb.y);
 
         let mut out = Vec2::new(
-            (self_max_x.min(other_max_x) -
-                self_min_x.max(other_min_x)).max(0.0),
-            (self_max_y.min(other_max_y) -
-                self_min_y.max(other_min_y)).max(0.0),
+            self_max_x.min(other_max_x) -
+                self_min_x.max(other_min_x),
+            self_max_y.min(other_max_y) -
+                self_min_y.max(other_min_y),
         );
 
         if self.center().x < other.center().x{
-            out *= -1.0;
+            out.x *= -1.0;
         }
 
         if self.center().y < other.center().y{
-            out *= -1.0;
+            out.y *= -1.0;
         }
 
         out
-
     }
 
     /// translates the Aabb
