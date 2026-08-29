@@ -87,11 +87,11 @@ pub fn apply_vel_system(
 
 /// Finds collisions for [`PhsObj`]s, reactions are caried out by [`collision_reaction_reader`]
 pub fn collision_reaction_system(
-    phs_objs: Query<(&Aabb, &Velocity, &Transform, Has<Pin>, Entity), With<Phs>>,
+    phs_objs: Query<(&Aabb, &Transform, Has<Pin>, Entity), With<Phs>>,
     mut writer: MessageWriter<SolveCollision>,
 ) {
-    for (aabb, vel, transform, has_pin, entity) in phs_objs.iter() {
-        for (other_aabb, _, other_transform, _ , other_entity) in phs_objs.iter() {
+    for (aabb, transform, has_pin, entity) in phs_objs.iter() {
+        for (other_aabb, other_transform, _ , other_entity) in phs_objs.iter() {
             if !has_pin && entity != other_entity{
                 let self_world_aabb = aabb.translate(transform.translation.xy());
                 let other_world_aabb = other_aabb.translate(other_transform.translation.xy());
@@ -105,11 +105,11 @@ pub fn collision_reaction_system(
 
                     let overlap = self_world_aabb.collideing_side(&other_world_aabb);
  
-                    writer.write(dbg!(SolveCollision{
+                    writer.write(SolveCollision{
                             entity,
                             x_overlap: overlap.x,
                             y_overlap: overlap.y,
-                    }));
+                    });
                 }
             }
         }
@@ -130,8 +130,6 @@ fn collision_reaction_reader(
 ) {
     for SolveCollision{entity, x_overlap, y_overlap} in reader.read() {
         if let Ok((mut vel, mut transform)) = phs_objs.get_mut(*entity) {
-
-            println!("pos: {}", transform.translation);
             
             if y_overlap.abs() + x_overlap.abs() < 0.0001 {
                 return; 
