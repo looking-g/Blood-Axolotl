@@ -117,9 +117,9 @@ pub fn collision_reaction_system(
 
 #[derive(Message, Debug)]
 pub struct SolveCollision {
-    entity: Entity,
-    x_overlap: f32,
-    y_overlap: f32,
+    pub entity: Entity,
+    pub x_overlap: f32,
+    pub y_overlap: f32,
 }
 
 /// Enacts collision reactions found by [`collision_reaction_system`]

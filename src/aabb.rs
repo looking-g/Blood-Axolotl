@@ -81,5 +81,10 @@ impl Aabb {
     }
 
     pub fn center(&self) -> Vec2 { (self.lt+self.rb) * 0.5 }
+
+    pub fn top(&self) -> f32 { self.lt.y.max(self.rb.y) }
+    pub fn bottom(&self) -> f32 { self.lt.y.min(self.rb.y) }
+    pub fn left(&self) -> f32 { self.lt.x.min(self.rb.x) }
+    pub fn right(&self) -> f32 { self.lt.x.max(self.rb.x) }
 }
 
