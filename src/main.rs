@@ -4,10 +4,12 @@ pub mod aabb;
 pub mod physics;
 pub mod player;
 pub mod buildings;
+pub mod debug;
 
 use physics::*;
 use player::{Player, player_plugin};
 use buildings::stairs::{stair_plugin, StairsBundle};
+use debug::*;
 
 fn main() {
     App::new()
@@ -22,7 +24,7 @@ fn main() {
                 ..default()
             }),
         ))
-        .add_plugins((physics_plugin, stair_plugin, player_plugin))
+        .add_plugins((physics_plugin, stair_plugin, player_plugin, debug_plugin))
 
         .add_systems(Startup, setup)
         .run();
