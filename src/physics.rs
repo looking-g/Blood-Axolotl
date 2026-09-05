@@ -15,6 +15,11 @@ pub struct Phs;
 /// Marker that states that a [`PhsObj`] will not be effected by gravity.
 pub struct Pin;
 
+/// The depth of an object
+#[derive(Component, Copy, Clone, Debug)]
+pub struct Depth(pub i32);
+
+
 #[derive(Bundle, Default)]
 /// An object that is effected by physics
 pub struct PhsObj{
@@ -99,11 +104,12 @@ pub fn apply_vel_system(
 
 /// Finds collisions for [`PhsObj`]s, reactions are caried out by [`collision_reaction_reader`]
 pub fn collision_reaction_system(
-    phs_objs: Query<(&Aabb, &Transform, Has<Pin>, Entity), With<Phs>>,
+    phs_objs: Query<(&Aabb, &Transform, Has<Pin>, Entity, Option<&Depth>), With<Phs>>,
     mut writer: MessageWriter<SolveCollision>,
 ) {
-    for (aabb, transform, has_pin, entity) in phs_objs.iter() {
-        for (other_aabb, other_transform, _ , other_entity) in phs_objs.iter() {
+    for (aabb, transform, has_pin, entity, option_depth) in phs_objs.iter() {
+        for (other_aabb, other_transform, _ , other_entity, other_option_depth) in phs_objs.iter() {
+            // correcting enity against other
             if !has_pin && entity != other_entity{
                 let self_world_aabb = aabb.translate(transform.translation.xy());
                 let other_world_aabb = other_aabb.translate(other_transform.translation.xy());
@@ -111,13 +117,14 @@ pub fn collision_reaction_system(
                 if Aabb::collide(&self_world_aabb, &other_world_aabb) {
 
                     // getting overlap
-
                     let overlap = self_world_aabb.collideing_side(&other_world_aabb);
  
                     writer.write(SolveCollision{
                             entity,
                             x_overlap: overlap.x,
                             y_overlap: overlap.y,
+                            depth_a: option_depth.copied(),
+                            depth_b: other_option_depth.copied(),
                     });
                 }
             }
@@ -130,6 +137,8 @@ pub struct SolveCollision {
     pub entity: Entity,
     pub x_overlap: f32,
     pub y_overlap: f32,
+    pub depth_a: Option<Depth>,
+    pub depth_b: Option<Depth>,
 }
 
 /// Enacts collision reactions found by [`collision_reaction_system`]
@@ -137,7 +146,12 @@ fn collision_reaction_reader(
     mut phs_objs: Query<(&mut Velocity, &mut Transform), With<Phs>>,
     mut reader: MessageReader<SolveCollision>,
 ) {
-    for SolveCollision{entity, x_overlap, y_overlap} in reader.read() {
+    for SolveCollision{entity, x_overlap, y_overlap, depth_a, depth_b} in reader.read() {
+        if let Some(depth_a) = depth_a && let Some(depth_b) = depth_b {
+            if depth_a.0 != depth_b.0 {
+                continue;
+            }
+        }
         if let Ok((mut vel, mut transform)) = phs_objs.get_mut(*entity) {
             if y_overlap.abs() + x_overlap.abs() < 0.0001 {
                 continue; 

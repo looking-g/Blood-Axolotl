@@ -45,7 +45,10 @@ fn setup(
         &mut meshes,
         &mut materials,
         Vec3::splat(0.0),
-        Some(Player),
+        Some((
+            Player,
+            Depth(0),
+        )),
     );
 
     
@@ -92,7 +95,7 @@ fn setup(
         &mut meshes,
         &mut materials,
         Vec3::splat(1.0),
-        Some(()),
+        Some(Depth(1)),
     );
 
 }

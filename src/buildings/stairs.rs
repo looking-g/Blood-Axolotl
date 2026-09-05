@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::physics::{Phs, Pin, SolveCollision};
+use crate::physics::{Phs, Pin, SolveCollision, Depth};
 use crate::aabb::Aabb;
 
 pub fn stair_plugin(app: &mut App) {
@@ -10,11 +10,11 @@ pub fn stair_plugin(app: &mut App) {
 
 /// Updates the stars (makes them work)
 fn stair_system(
-    phs_objs: Query<(&Aabb, &Transform, Entity), (With<Phs>, Without<Pin>)>,
-    stairs: Query<(&Transform, &StairsSize), With<Stairs>>,
+    phs_objs: Query<(&Aabb, &Transform, Entity, Option<&Depth>), (With<Phs>, Without<Pin>)>,
+    stairs: Query<(&Transform, &StairsSize, Option<&Depth>), With<Stairs>>,
     mut writer: MessageWriter<SolveCollision>,
 ) {
-    for (stair_transform, stair_size) in stairs.iter() {
+    for (stair_transform, stair_size, stair_depth) in stairs.iter() {
         let stairs_aabb = Aabb::new(
             stair_transform.translation.xy(),
             Vec2::new(
@@ -23,7 +23,7 @@ fn stair_system(
             ) + stair_transform.translation.xy(),
         );
 
-        for (ob_aabb, ob_transform, ob_entity) in phs_objs.iter() { 
+        for (ob_aabb, ob_transform, ob_entity, ob_depth) in phs_objs.iter() { 
             // basic collision check
             // translated ob_aabb
             let t_ob_aabb = ob_aabb.translate(ob_transform.translation.xy());
@@ -71,6 +71,8 @@ fn stair_system(
                     entity: ob_entity,
                     x_overlap: 1.0 / 0.0,
                     y_overlap: corrected_collision,
+                    depth_a: stair_depth.copied(),
+                    depth_b: ob_depth.copied(),
                 });
             }
 
