@@ -1,10 +1,10 @@
 /// Mod that holds all the player systems
 use bevy::prelude::*;
-use crate::physics::Velocity;
+use crate::physics::{Velocity, Depth};
 
 pub fn player_plugin(app: &mut App) {
     app
-        .add_systems(Update, movement_system)
+        .add_systems(Update, (movement_system, depth_system))
     ;
 }
 
@@ -34,3 +34,19 @@ fn movement_system(
     }
 }
 
+fn depth_system(
+    mut player: Single<&mut Depth, With<Player>>,
+    input: Res<ButtonInput<KeyCode>>,
+) {
+
+    let key_w = input.just_pressed(KeyCode::KeyW);
+    let key_s = input.just_pressed(KeyCode::KeyS);
+
+    if !(key_w ^ key_s) {
+        return;
+    } else if key_s {
+        player.0 -= 1;
+    } else if key_w {
+        player.0 += 1;
+    }
+}
