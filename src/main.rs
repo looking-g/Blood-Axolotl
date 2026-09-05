@@ -42,11 +42,10 @@ fn setup(
         &mut commands,
         Vec2::new(-200.0, 60.0),
         Vec2::new(25.0, 50.0),
-        Some((
-            Mesh2d( meshes.add(Rectangle::new(50.0, 100.0)) ),
-            MeshMaterial2d(materials.add( Color::srgba(0.0, 0.0, 0.0, 1.0) )),
-            Player,
-        )),
+        &mut meshes,
+        &mut materials,
+        Vec3::splat(0.0),
+        Some(Player),
     );
 
     
@@ -54,11 +53,10 @@ fn setup(
         &mut commands,
         Vec2::new(0.0, -300.0),
         Vec2::new(500.0, 50.0),
-        Some((
-            Mesh2d( meshes.add(Rectangle::new(1_000.0, 100.0)) ),
-            MeshMaterial2d(materials.add( Color::srgba(1.0, 1.0, 0.0, 1.0) )),
-            Pin,
-        )),
+        &mut meshes,
+        &mut materials,
+        Vec3::new(1.0, 1.0, 0.0),
+        Some(Pin),
     );
 
 
@@ -67,14 +65,10 @@ fn setup(
         Vec2::new(0.0, -250.0),
         -50.0,
         50.0,
-        Some((
-            Mesh2d(meshes.add(Triangle2d::new(
-                Vec2::new(0.0, 0.0),
-                Vec2::new(-50.0, 0.0),
-                Vec2::new(0.0, 50.0),
-            ))),
-            MeshMaterial2d(materials.add( Color::srgba(1.0, 1.0, 1.0, 1.0) )),
-        )),
+        &mut meshes,
+        &mut materials,
+        Vec3::splat(1.0),
+        Some(()),
     );
 
 
@@ -83,14 +77,10 @@ fn setup(
         Vec2::new(300.0, -250.0),
         -50.0,
         150.0,
-        Some((
-            Mesh2d(meshes.add(Triangle2d::new(
-                Vec2::new(0.0, 0.0),
-                Vec2::new(-50.0, 0.0),
-                Vec2::new(0.0, 150.0),
-            ))),
-            MeshMaterial2d(materials.add( Color::srgba(1.0, 1.0, 1.0, 1.0) )),
-        )),
+        &mut meshes,
+        &mut materials,
+        Vec3::splat(1.0),
+        Some(()),
     );
 
 
@@ -99,14 +89,10 @@ fn setup(
         Vec2::new(-400.0, -250.0),
         150.0,
         50.0,
-        Some((
-            Mesh2d(meshes.add(Triangle2d::new(
-                Vec2::new(0.0, 0.0),
-                Vec2::new(150.0, 0.0),
-                Vec2::new(0.0, 50.0),
-            ))),
-            MeshMaterial2d(materials.add( Color::srgba(1.0, 1.0, 1.0, 1.0) )),
-        )),
+        &mut meshes,
+        &mut materials,
+        Vec3::splat(1.0),
+        Some(()),
     );
 
 }

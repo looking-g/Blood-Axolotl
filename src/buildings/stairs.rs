@@ -126,11 +126,25 @@ impl StairsBundle {
         pos: Vec2, 
         length: f32, 
         height: f32,
+        meshes: &mut ResMut<Assets<Mesh>>,             // | mostly temp
+        materials: &mut ResMut<Assets<ColorMaterial>>, // |
+        color: Vec3, // |val| 0.0<=val<=1.0
         extra_components: Option<impl Bundle>,
     ) {
         let id = commands.spawn(
             Self::new(pos, length, height)
         ).id();
+
+        commands.entity(id).insert((
+            Mesh2d(meshes.add(Triangle2d::new(
+                Vec2::new(0.0, 0.0),
+                Vec2::new(length, 0.0),
+                Vec2::new(0.0, height),
+            ))),
+            MeshMaterial2d(materials.add( Color::srgba(
+                color.x, color.y, color.z, 1.0
+            ) )),
+        ));
 
         if let Some(bundle) = extra_components {
             commands.entity(id).insert(bundle);

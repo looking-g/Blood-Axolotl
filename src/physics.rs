@@ -40,11 +40,21 @@ impl PhsObj {
         commands: &mut Commands,
         pos: Vec2, 
         half_size: Vec2,
+        meshes: &mut ResMut<Assets<Mesh>>,             // | mostly temp
+        materials: &mut ResMut<Assets<ColorMaterial>>, // |
+        color: Vec3, // |val| 0.0<=val<=1.0
         extra_components: Option<impl Bundle>,
     ) {
         let id = commands.spawn(
             Self::new(pos, half_size)
         ).id();
+
+        commands.entity(id).insert((
+            Mesh2d( meshes.add(Rectangle{half_size}) ),
+            MeshMaterial2d(materials.add( Color::srgba(
+                color.x, color.y, color.z, 1.0
+            ) )),
+        ));
 
         if let Some(bundle) = extra_components {
             commands.entity(id).insert(bundle);
