@@ -8,7 +8,8 @@ pub mod debug;
 
 use physics::*;
 use player::{Player, player_plugin};
-use buildings::stairs::{stair_plugin, StairsBundle};
+use buildings::stairs::stair_plugin;
+use buildings::buildings::buildings_plugin;
 use debug::*;
 
 fn main() {
@@ -24,7 +25,7 @@ fn main() {
                 ..default()
             }),
         ))
-        .add_plugins((physics_plugin, stair_plugin, player_plugin, debug_plugin))
+        .add_plugins((physics_plugin, stair_plugin, player_plugin, debug_plugin, buildings_plugin))
 
         .add_systems(Startup, setup)
         .run();
@@ -38,8 +39,8 @@ fn setup(
     commands.spawn((
         Camera2d,
     ));
-
-    
+ 
+    // player
     PhsObj::new_to_world(
         &mut commands,
         Vec2::new(-200.0, 60.0),
@@ -54,50 +55,5 @@ fn setup(
     );
 
     
-    PhsObj::new_to_world(
-        &mut commands,
-        Vec2::new(0.0, -300.0),
-        Vec2::new(500.0, 50.0),
-        &mut meshes,
-        &mut materials,
-        Vec3::new(1.0, 1.0, 0.0),
-        Some(Pin),
-    );
-
-
-    StairsBundle::new_to_world(
-        &mut commands,
-        Vec2::new(0.0, -250.0),
-        -50.0,
-        50.0,
-        &mut meshes,
-        &mut materials,
-        Vec3::splat(1.0),
-        Some(()),
-    );
-
-
-    StairsBundle::new_to_world(
-        &mut commands,
-        Vec2::new(300.0, -250.0),
-        -50.0,
-        150.0,
-        &mut meshes,
-        &mut materials,
-        Vec3::splat(1.0),
-        Some(()),
-    );
-
-
-    StairsBundle::new_to_world(
-        &mut commands,
-        Vec2::new(-400.0, -250.0),
-        150.0,
-        50.0,
-        &mut meshes,
-        &mut materials,
-        Vec3::splat(1.0),
-        Some(Depth(1)),
-    );
 
 }
