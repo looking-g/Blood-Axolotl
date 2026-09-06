@@ -38,6 +38,7 @@ fn setup(
 ) {
     commands.spawn((
         Camera2d,
+        Transform::from_translation(Vec3::new(-200.0, 0., 0.)),
     ));
  
     // player

@@ -4,7 +4,7 @@ use crate::physics::{Velocity, Depth};
 
 pub fn player_plugin(app: &mut App) {
     app
-        .add_systems(Update, (movement_system, depth_system))
+        .add_systems(Update, (movement_system, depth_system, move_camera))
     ;
 }
 
@@ -49,4 +49,12 @@ fn depth_system(
     } else if key_w {
         player.0 += 1;
     }
+}
+
+fn move_camera(
+    player: Single<&Transform, (With<Player>, Without<Camera>)>,
+    mut camera: Single<&mut Transform, (With<Camera>, Without<Player>)>,
+) {
+    let transfrom_diff = player.translation - camera.translation;
+    camera.translation += transfrom_diff * 0.15;
 }
