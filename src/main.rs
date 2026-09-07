@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 pub mod aabb;
+#[macro_use]
 pub mod physics;
 pub mod player;
 pub mod buildings;
@@ -51,10 +52,8 @@ fn setup(
         Vec3::splat(0.0),
         Some((
             Player,
-            Depth(0),
+            depth!(0),
         )),
-    );
-
-    
+    ); 
 
 }

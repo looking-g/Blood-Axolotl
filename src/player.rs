@@ -35,19 +35,21 @@ fn movement_system(
 }
 
 fn depth_system(
-    mut player: Single<&mut Depth, With<Player>>,
+    player: Single<&mut Depth, With<Player>>,
     input: Res<ButtonInput<KeyCode>>,
 ) {
 
     let key_w = input.just_pressed(KeyCode::KeyW);
     let key_s = input.just_pressed(KeyCode::KeyS);
 
-    if !(key_w ^ key_s) {
-        return;
-    } else if key_s {
-        player.0 -= 1;
-    } else if key_w {
-        player.0 += 1;
+    if let Depth::Single(ref mut d) = *player.into_inner() {
+        if !(key_w ^ key_s) {
+            return;
+        } else if key_s {
+            *d -= 1;
+        } else if key_w {
+            *d += 1;
+        }
     }
 }
 

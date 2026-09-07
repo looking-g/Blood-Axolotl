@@ -15,10 +15,50 @@ pub struct Phs;
 /// Marker that states that a [`PhsObj`] will not be effected by gravity.
 pub struct Pin;
 
-/// The depth of an object
+/// The depth range of an object
 #[derive(Component, Copy, Clone, Debug)]
-pub struct Depth(pub i32);
+pub enum Depth{
+    Single(i32),
+    /// inclusive, inclusive
+    Range {
+        lower: i32,
+        higher: i32,
+    },
+    /// Same as not haveing a Depth val
+    All,
+}
 
+impl Depth {
+
+    /// Converts a [`Depth`] to a range of (lower, higher
+    fn to_range(&self) -> (i32, i32) {
+        match self {
+            Depth::Single(val) => (*val, *val),
+            Depth::Range{lower, higher} => (*lower, *higher),
+            Depth::All => panic!("Depth::All can not be converted to a range"),
+        }
+    }
+
+    /// Checks if two Depths overlap
+    pub fn overlaps(&self, other: &Self) -> bool {
+        if matches!(self, Depth::All) || matches!(other, Depth::All) {
+            return true;
+        }
+        let range1 = self.to_range();
+        let range2 = other.to_range();
+
+        (range1.0 <= range2.0 && range2.0 <= range1.1) ||
+        (range1.0 <= range2.1 && range2.1 <= range1.1) 
+
+    }
+
+}
+
+macro_rules! depth {
+    ($val1:tt, $val2:tt) => { Depth::Range{lower: $val1.min($val2), higher: $val1.max($val2)} };
+    ($single_val:tt) => { Depth::Single($single_val) };
+    () => { Depth::All };
+}
 
 #[derive(Bundle, Default)]
 /// An object that is effected by physics
@@ -148,7 +188,7 @@ fn collision_reaction_reader(
 ) {
     for SolveCollision{entity, x_overlap, y_overlap, depth_a, depth_b} in reader.read() {
         if let Some(depth_a) = depth_a && let Some(depth_b) = depth_b {
-            if depth_a.0 != depth_b.0 {
+            if !depth_a.overlaps(depth_b) {
                 continue;
             }
         }

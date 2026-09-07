@@ -18,7 +18,7 @@ fn ground(
 ) {
     PhsObj::new_to_world(
         &mut commands,
-        Vec2::new(0.0, -300.0),
+        Vec2::new(0.0, -50.0),
         Vec2::new(1_000.0, 50.0),
         &mut meshes,
         &mut materials,
@@ -33,40 +33,41 @@ fn building_1(
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
 
+    // base floor
     StairsBundle::new_to_world(
         &mut commands,
-        Vec2::new(0.0, -250.0),
+        Vec2::new(0.0, 0.0),
         50.0,
         50.0,
         &mut meshes,
         &mut materials,
         Vec3::splat(1.0) * 0.8,
-        Some(Depth(1)),
+        Some(depth!(1)),
     );
 
     PhsObj::new_to_world(
         &mut commands,
-        Vec2::new(-200.0, -225.0),
-        Vec2::new(200.0, 25.0),
+        Vec2::new(-400.0, 25.0),
+        Vec2::new(400.0, 25.0),
         &mut meshes,
         &mut materials,
         Vec3::new(1.0, 1.0, 0.0) * 0.8,
         Some((
-            Depth(1),
+            depth!(1, 2),
             Pin,
         )),
     );
 
-
     StairsBundle::new_to_world(
         &mut commands,
-        Vec2::new(-400.0, -250.0),
+        Vec2::new(-800.0, 0.0),
         -50.0,
         50.0,
         &mut meshes,
         &mut materials,
         Vec3::splat(1.0) * 0.8,
-        Some(Depth(1)),
+        Some(depth!(1)),
     );
+
 
 }

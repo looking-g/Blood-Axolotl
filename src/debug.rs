@@ -13,11 +13,13 @@ fn display_info_top(
     mut text_gizmos: Gizmos,
     player: Single<&Depth, With<Player>>,
 ) {
-    text_gizmos.text_2d(
-        Isometry2d::from_xy(0.0, 300.0),
-        &format!("player depth: {}", player.0),
-        30.0,
-        Vec2::ZERO,
-        Color::WHITE,
-    );
+    if let Depth::Single(d) = player.into_inner() {
+        text_gizmos.text_2d(
+            Isometry2d::from_xy(0.0, 300.0),
+            &format!("player depth: {}", d),
+            30.0,
+            Vec2::ZERO,
+            Color::WHITE,
+        );
+    }
 }
