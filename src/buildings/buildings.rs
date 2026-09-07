@@ -2,11 +2,13 @@
 use bevy::prelude::*;
 use crate::physics::*;
 use super::stairs::*;
+use crate::collectables::{CollectableLocation, place_collectables};
+
 
 pub fn buildings_plugin(app: &mut App) {
 
     app
-        .add_systems(Startup, (ground, buildings))
+        .add_systems(Startup, (ground, buildings, place_collectables).chain())
     ;
 }
 
@@ -134,5 +136,19 @@ fn building_maker(
         &mut materials,
         Vec3::new(1.0, 1.0, 0.0),
         Some(Pin),
+    );
+
+    PhsObj::new_to_world(
+        &mut commands,
+        Vec2::new(-200.0, 275.0) + pos,
+        Vec2::new(25.0, 25.0),
+        &mut meshes,
+        &mut materials,
+        Vec3::new(0.0, 0.0, 1.0) * 0.2,
+        Some((
+            Pin,
+            depth!(10),
+            CollectableLocation,
+        )),
     );
 }

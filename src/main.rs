@@ -6,11 +6,13 @@ pub mod physics;
 pub mod player;
 pub mod buildings;
 pub mod debug;
+pub mod collectables;
 
 use physics::*;
 use player::{Player, player_plugin};
 use buildings::stairs::stair_plugin;
 use buildings::buildings::buildings_plugin;
+use collectables::collectable_plugin;
 use debug::*;
 
 fn main() {
@@ -26,9 +28,8 @@ fn main() {
                 ..default()
             }),
         ))
-        .add_plugins((physics_plugin, stair_plugin, player_plugin, debug_plugin, buildings_plugin))
-
         .add_systems(Startup, setup)
+        .add_plugins((physics_plugin, stair_plugin, player_plugin, debug_plugin, buildings_plugin, collectable_plugin))
         .run();
 }
 

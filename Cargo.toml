@@ -4,5 +4,5 @@ version = "0.0.1"
 edition = "2024"
 
 [dependencies]
-
 bevy = "0.19"
+rand = {version = "0.10", features = ["thread_rng"]}
