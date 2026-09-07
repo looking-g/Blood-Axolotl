@@ -4,7 +4,7 @@ use crate::physics::{Velocity, Depth};
 
 pub fn player_plugin(app: &mut App) {
     app
-        .add_systems(Update, (movement_system, depth_system, move_camera))
+        .add_systems(Update, (movement_system, depth_system, move_camera, set_player_to_front))
     ;
 }
 
@@ -59,4 +59,11 @@ fn move_camera(
 ) {
     let transfrom_diff = player.translation - camera.translation;
     camera.translation += transfrom_diff * 0.15;
+}
+
+/// Forces the player to be infront of all other objects
+fn set_player_to_front(
+    mut player: Single<&mut Transform, With<Player>>,
+) {
+    player.translation.z = 1.0;
 }
