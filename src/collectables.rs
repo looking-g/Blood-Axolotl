@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 use crate::{
     aabb::Aabb,
-    physics::{PhsObj, Pin},
+    physics::{PhsObj, Pin, Depth},
     player::Player,
 };
 use rand::random_range;
@@ -62,7 +62,7 @@ pub fn place_collectables(
                 &mut meshes,
                 &mut materials,
                 Vec3::new(0.0, 1.0, 1.0),
-                Some((Collectable, Pin)),
+                Some((Collectable, Pin, depth!(10))),
             );
         } 
 
