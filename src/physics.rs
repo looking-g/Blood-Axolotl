@@ -89,7 +89,7 @@ impl PhsObj {
         materials: &mut ResMut<Assets<ColorMaterial>>, // |
         color: Vec3, // |val| 0.0<=val<=1.0
         extra_components: Option<impl Bundle>,
-    ) {
+    ) -> Entity {
         let id = commands.spawn(
             Self::new(pos, half_size)
         ).id();
@@ -105,6 +105,7 @@ impl PhsObj {
             commands.entity(id).insert(bundle);
         }
 
+        id
     }
 }
 
