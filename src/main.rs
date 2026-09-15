@@ -7,6 +7,7 @@ pub mod player;
 pub mod buildings;
 pub mod debug;
 pub mod collectables;
+pub mod axolotl;
 
 use physics::*;
 use player::{Player, player_plugin};
@@ -14,6 +15,7 @@ use buildings::stairs::stair_plugin;
 use buildings::buildings::buildings_plugin;
 use collectables::collectable_plugin;
 use debug::*;
+use axolotl::axolotl_plugin;
 
 fn main() {
     App::new()
@@ -29,7 +31,7 @@ fn main() {
             }),
         ))
         .add_systems(Startup, setup)
-        .add_plugins((physics_plugin, stair_plugin, player_plugin, debug_plugin, buildings_plugin, collectable_plugin))
+        .add_plugins((physics_plugin, stair_plugin, player_plugin, debug_plugin, buildings_plugin, collectable_plugin, axolotl_plugin))
         .run();
 }
 
