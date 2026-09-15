@@ -64,6 +64,9 @@ fn move_camera(
 /// Forces the player to be infront of all other objects
 fn set_player_to_front(
     mut player: Single<&mut Transform, With<Player>>,
+    mut player_depth: Single<&mut Depth, With<Player>>,
 ) {
-    player.translation.z = 1.0;
+    if let Depth::Single(d) = **player_depth{
+        player.translation.z = 100.0 - d as f32;
+    }
 }
