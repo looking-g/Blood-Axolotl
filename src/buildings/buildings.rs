@@ -150,7 +150,7 @@ fn building_maker(
         Some((
             Pin,
             depth!(10),
-            CollectableLocation,
+            CollectableLocation::default(),
         )),
     );
 
@@ -164,7 +164,7 @@ fn building_maker(
         Some((
             Pin,
             depth!(10),
-            CollectableLocation,
+            CollectableLocation::default(),
         )),
     );
 
@@ -178,7 +178,7 @@ fn building_maker(
         Some((
             Pin,
             depth!(10),
-            CollectableLocation,
+            CollectableLocation::default(),
         )),
     );
 
@@ -193,7 +193,7 @@ fn building_maker(
         Some((
             Pin,
             depth!(10),
-            CollectableLocation,
+            CollectableLocation::default(),
         )),
     );
 }
