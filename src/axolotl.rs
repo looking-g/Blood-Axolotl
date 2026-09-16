@@ -34,7 +34,7 @@ fn make_axolotl(
 /// Sets the Blood Axolotl to the front
 fn set_to_front(
     mut ba_transfrom: Single<&mut Transform, With<BloodAxolotl>>,
-    mut ba_depth: Single<&mut Depth, With<BloodAxolotl>>,
+    ba_depth: Single<&mut Depth, With<BloodAxolotl>>,
 ) {
     if let Depth::Single(d) = **ba_depth{
         ba_transfrom.translation.z = 100.0 - d as f32;
